@@ -1,0 +1,3 @@
+[submodule "ntuple-gizmo"]
+	path = ntuple-gizmo
+	url = git@github.com:uc-lhcb/ntuple-gizmo.git
