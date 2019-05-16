@@ -1,4 +1,4 @@
-# -Xic0ToOmegaK
+# Xic0ToOmegaK
 The purpose of Xi_c0ToOmegaK is to measure the mass of Xi_c0 by making cuts on the daughter particle properties measured in the cascade produced by a proton-proton collision.  
 
 To analyze  myOmegamKpTuple_0.root from 2015 I created the macros Xi_c0.C & Xi_c0.h which can be ran in root using 
