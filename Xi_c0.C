@@ -33,10 +33,11 @@ TH1 * backgroundsubtractedXi = nullptr;
 const int TRACK_LONG = 3;
 const int TRACK_DOWN = 5;
 
-#include "fit1MeV_Gaussian.C"
+#include "fit1MeV_Gaussian.C"//this file is currently missing in the repo
 #include "Xi_c0.h"
 #include <TH2.h>
 #include <TStyle.h>
+#include <functional>
 
 void Xi_c0::Begin(TTree * /*tree*/)
 {
@@ -50,6 +51,34 @@ void Xi_c0::Begin(TTree * /*tree*/)
 	strippingLevelXiLLLMassHist = new TH1D("XiLLL, Omega- K+", "LLL: Stripping Level Cuts", 100, 2320, 3100);
 	strippingLevelXiDLLMassHist = new TH1D("XiDLL Omega- K+", "DLL: StrippingLevel Cuts", 100, 2320, 3100);
 	backgroundsubtractedXi = new TH1D("Background Noise", "Xi LL Background Subtracted", 100, 2320, 3100);
+
+	//One way to think about the task at hand is in terms of selection/histogram pairs.
+  //You can initialize the functors representing the selections and the TH1s here.
+
+  //this is a functor. it is relatively new in C++ (came with C++11). What you do here is the following:
+  // you declare a function object that takes a double and integer and returns a boolean, i.e. pass or fail the selection.
+  // (sidenote: the double and int are passed by reference (& meaning that no copy is made) and declared const, since we know they don't change value in the functor)
+  // This functor will only do something useful when we evaluate it later in the event loop (during Xi_c0::Process)
+  // More on the syntax: std::function<bool(const double&, const int&)> is the type of our functor. std::function<T> is "templated" meaning that you can specify T to be anything you want.
+  // Our functor object is called GoodLambdaLL and we will evaluate it later with GoodLambdaLL(foo,bar);
+  // The rest = [] () {}; is a so called C++ Lambda which defines an inline function
+  std::function<bool(const double&, const int&)> GoodLambdaLL = [&TRACK_LONG] (const double& current_LambdaPr_ProbNNp,
+                                                                const int& current_LambdaPr_TRACK_Type) -> bool {
+    return current_LambdaPr_ProbNNp > 0.1 && current_LambdaPr_TRACK_Type == TRACK_LONG;
+  };
+  // We can do the same with an Omega selection. To be able to use the LambdaLL functor, we "capture" it by reference. This is written as [&GoodLambdaLL]
+  std::function<bool(const double&, const int&, const double&, const int&)> GoodOmegaLLL
+      = [&GoodLambdaLL,&TRACK_LONG] (const double& current_LambdaPr_ProbNNp, const int& current_LambdaPr_TRACK_Type,
+        const double& current_Lambda_M, const int& current_OmegaK_TRACK_Type) -> bool {
+    return GoodLambdaLL(current_LambdaPr_ProbNNp, current_LambdaPr_TRACK_Type) &&
+        1112 < current_Lambda_M && current_Lambda_M < 1120 && current_OmegaK_TRACK_Type == TRACK_LONG;
+  };
+
+  //now we make functor-histogram pairs. we declare a vector for this
+  std::vector<std::pair<std::function,TH1D>> histos;
+  histos.emplace_back(GoodLambdaLL,("LambdaLL",";M_{inv} (p#pi^{-}) (MeV); Candidates/0.25 MeV", 120, 1100, 1130));
+  histos.emplace_back(GoodOmegaLLL,("OmegaLLL",";M_{inv} (#Lambda K^{-}) (MeV); Candidates/0.5 MeV", 100, 1650, 1700));
+
 }
 
 void Xi_c0::SlaveBegin(TTree * /*tree*/)
@@ -66,6 +95,22 @@ Bool_t Xi_c0::Process(Long64_t entry)
 {
 fReader.SetEntry(entry);
 GetEntry(entry);
+
+//in a perfect world everything would essentially collapse to this:
+for(auto& h : histos)
+  if(h.first(...))
+    h.second.Fill();
+
+//however, you might have already noticed that not all the std::function s we would like to set up have the same template parameters inside their <> brackets.
+// we could always give all the information of the current entry to the functor, but this is suboptimal.
+// the root developers thus moved away from PROOF and TTreeReader and adapted the very sophisticated solution of "just in time" (JIT) compilation for these sort of problems.
+// This is nicely coded up in "RDataFrame" and is the new standard since about a year or 2.
+// This is something new to learn, but I guess it will pay off soon.
+// If you like, you can use code that I have developed which hides all the C++ magic.
+// Have a look at https://github.com/uc-lhcb/ntuple-gizmo/ , especially https://github.com/uc-lhcb/ntuple-gizmo/blob/master/doc/chain2histRDF.md
+// and https://github.com/uc-lhcb/ntuple-gizmo/blob/master/config/template_chain2histRDF.info
+// (note that some links are broken since they are treated different in gitlab and github)
+
 double Xic0_mass = *Xi_c0_MM;
 	
 	bool GoodXiLDD = (
