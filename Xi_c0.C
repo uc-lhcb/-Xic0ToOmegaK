@@ -74,12 +74,12 @@ double Xic0_mass = *Xi_c0_MM;
 		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
 		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
 
-		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
 		//&&(*Omega_IPCHI2_OWNPV > 0)
 		//&&(*Omega_IPCHI2_OWNPV < 20)
 		
-		//&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		//&&(*OmegaK_ProbNNk > 0.5)
+		&&(*OmegaK_TRACK_Type == TRACK_LONG)
+		&&(*OmegaK_ProbNNk > 0.5)
 		
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
 		&&(*Lambda_IPCHI2_OWNPV > 0)
@@ -96,24 +96,24 @@ double Xic0_mass = *Xi_c0_MM;
 	bool GoodXiDDD = (
 		
 		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		&&(*Xi_c0_IPCHI2_OWNPV < 5)
+		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
+		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
 
-		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		&&(*Omega_IPCHI2_OWNPV > 0)
-		&&(*Omega_IPCHI2_OWNPV < 20)
+		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		//&&(*Omega_IPCHI2_OWNPV > 0)
+		//&&(*Omega_IPCHI2_OWNPV < 20)
 
 		&&(*OmegaK_TRACK_Type == TRACK_DOWN)
-		&&(*OmegaK_ProbNNk > 0.5)
+		//&&(*OmegaK_ProbNNk > 0.5)
 
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		&&(*Lambda_IPCHI2_OWNPV > 0)
-		&&(*Lambda_IPCHI2_OWNPV < 500)
+		//&&(*Lambda_IPCHI2_OWNPV > 0)
+		//&&(*Lambda_IPCHI2_OWNPV < 500)
 
-		&&(*LambdaPr_ProbNNp > 0.1)
+		//&&(*LambdaPr_ProbNNp > 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
 
-		&&(*LambdaPi_ProbNNpi > 0.1)
+		//&&(*LambdaPi_ProbNNpi > 0.1)
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
 	
 		);
@@ -121,24 +121,24 @@ double Xic0_mass = *Xi_c0_MM;
 	bool GoodXiLLL = (
 		
 		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		&&(*Xi_c0_IPCHI2_OWNPV < 5)
+		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
+		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
 
-		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		&&(*Omega_IPCHI2_OWNPV > 0)
-		&&(*Omega_IPCHI2_OWNPV < 20)
+		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		//&&(*Omega_IPCHI2_OWNPV > 0)
+		//&&(*Omega_IPCHI2_OWNPV < 20)
 
 		&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		&&(*OmegaK_ProbNNk > 0.5)
+		//&&(*OmegaK_ProbNNk > 0.5)
 
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		&&(*Lambda_IPCHI2_OWNPV > 0)
-		&&(*Lambda_IPCHI2_OWNPV < 500)
+		//&&(*Lambda_IPCHI2_OWNPV > 0)
+		//&&(*Lambda_IPCHI2_OWNPV < 500)
 
-		&&(*LambdaPr_ProbNNp > 0.1)
+		//&&(*LambdaPr_ProbNNp > 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_LONG)
 
-		&&(*LambdaPi_ProbNNpi > 0.1)
+		//&&(*LambdaPi_ProbNNpi > 0.1)
 		&&(*LambdaPi_TRACK_Type == TRACK_LONG)
 		
 		);
@@ -146,24 +146,24 @@ double Xic0_mass = *Xi_c0_MM;
 	bool GoodXiDLL = (
 		
 		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		&&(*Xi_c0_IPCHI2_OWNPV < 5)
+		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
+		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
 
-		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		&&(*Omega_IPCHI2_OWNPV > 0)
-		&&(*Omega_IPCHI2_OWNPV < 20)
+		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		//&&(*Omega_IPCHI2_OWNPV > 0)
+		//&&(*Omega_IPCHI2_OWNPV < 20)
 
 		&&(*OmegaK_TRACK_Type == TRACK_DOWN)
-		&&(*OmegaK_ProbNNk > 0.5)
+		//&&(*OmegaK_ProbNNk > 0.5)
 
-		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		&&(*Lambda_IPCHI2_OWNPV > 0)
-		&&(*Lambda_IPCHI2_OWNPV < 500)
+		//&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
+		//&&(*Lambda_IPCHI2_OWNPV > 0)
+		//&&(*Lambda_IPCHI2_OWNPV < 500)
 
-		&&(*LambdaPr_ProbNNp > 0.1)
+		//&&(*LambdaPr_ProbNNp > 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_LONG)
 
-		&&(*LambdaPi_ProbNNpi > 0.1)
+		//&&(*LambdaPi_ProbNNpi > 0.1)
 		&&(*LambdaPi_TRACK_Type == TRACK_LONG)
 		
 		);
@@ -234,6 +234,8 @@ void Xi_c0::SlaveTerminate()
 void Xi_c0::Terminate()
 {
 TCanvas c1;
+strippingLevelXiLDDMassHist->GetXaxis()->SetTitle("MeV");
+strippingLevelXiLDDMassHist->GetYaxis()->SetTitle("Events Per 8 MeV");
 strippingLevelXiLDDMassHist->Draw();
 //backgroundSubtractedXi->Draw();
 c1.SaveAs("Xi_c0_fit.png");
