@@ -41,7 +41,7 @@ alias gitmagic='eval "$(ssh-agent -s)";ssh-add ~/.ssh/id_rsa'
 SetupXic0ToOmegaK(){
   cd ~/work/Xic0ToOmegaK
   export DUMPDIR=/share/lazy/David/Xic0ToOmegaK
-  export TUPLEDIR=<directory where the tuples are>
+  export TUPLEDIR=</share/lazy/sokoloff/May2019/2015/MagDown/0x10600a2/myOmegamKpTuple_0.root>
   gitmagic
   . setup.sh
 }
