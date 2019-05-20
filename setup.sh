@@ -36,3 +36,12 @@ if [ -d "$SFT_DIR" ]; then
 else
   printf "\033[1;31m ERROR  \033[0m: Can not setup environment. Make sure cvmfs is mounted..."
 fi
+
+alias gitmagic='eval "$(ssh-agent -s)";ssh-add ~/.ssh/id_rsa'
+SetupXic0ToOmegaK(){
+  cd ~/work/Xic0ToOmegaK
+  export DUMPDIR=/share/lazy/David/Xic0ToOmegaK
+  export TUPLEDIR=<directory where the tuples are>
+  gitmagic
+  . setup.sh
+}
