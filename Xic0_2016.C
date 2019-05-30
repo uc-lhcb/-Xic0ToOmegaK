@@ -35,8 +35,9 @@ TH1 * LambdaUpperBand = nullptr;
 TH1 * BandSignals = nullptr;
 TH1 * TotalSignals = nullptr;
 
-TCanvas *c1 = new TCanvas("Background SUbtraction", "Histograms", 1000, 500);
-THStack *hs = new THStack("hs", "Background Subtracted Lambda Mass");
+//failed experimenting but possible future use
+//TCanvas *c1 = new TCanvas("Background Subtraction", "Histograms", 1000, 500);
+//THStack *hs = new THStack("hs", "Background Subtracted Lambda Mass");
 
 #include "fit1MeV_Gaussian.C"
 #include "Xic0_2016.h"
@@ -53,11 +54,12 @@ void Xic0_2016::Begin(TTree * /*tree*/)
 	OmegaM = new TH1D("Omega: Lambda, K-", "Omega- Mass", 100, 1640, 1710);
 	zoomhist = new TH1D("Stats", "Zoomed Hist", 100, 0, 20);
 
-	LambdaSignal = new TH1D("Signal Region - Lambda", "Background Mass", 100, 1112, 1119);
-	LambdaLowerBand = new TH1D("Lower Signal Region - Lambda", "Lower Band Mass", 100, 1090, 1112);
-	LambdaUpperBand = new TH1D("Upper Signal Region - Lambda", "Upper Band Mass", 100, 1119, 1140);
-	BandSignals = new TH1D("Band Signals", "Band Mass Signals", 100, 1090, 1140);
-	TotalSignals = new TH1D("Lambda Mass", "Background Adjusted Lambda Mass", 100, 1090, 1140);
+	//failed experimenting but possible future use
+	//LambdaSignal = new TH1D("Signal Region - Lambda", "Background Mass", 100, 1112, 1119);
+	//LambdaLowerBand = new TH1D("Lower Signal Region - Lambda", "Lower Band Mass", 100, 1090, 1112);
+	//LambdaUpperBand = new TH1D("Upper Signal Region - Lambda", "Upper Band Mass", 100, 1119, 1140);
+	//BandSignals = new TH1D("Band Signals", "Band Mass Signals", 100, 1090, 1140);
+	//TotalSignals = new TH1D("Lambda Mass", "Background Adjusted Lambda Mass", 100, 1090, 1140);
 
    // The Begin() function is called at the start of the query.
    // When running with PROOF Begin() is only called on the client.
@@ -81,16 +83,18 @@ Bool_t Xic0_2016::Process(Long64_t entry)
 fReader.SetEntry(entry);
 GetEntry(entry);
 
-bool SignalRegion = *Lambda_MM > 1112 && *Lambda_MM < 1119;
-bool LowerSignalRegion = *Lambda_MM > 1090 && *Lambda_MM < 1112;
-bool UpperSignalRegion = *Lambda_MM > 1119 && *Lambda_MM < 1140;
+	
+//failed experimenting but possible future use
+//bool SignalRegion = *Lambda_MM > 1112 && *Lambda_MM < 1119;
+//bool LowerSignalRegion = *Lambda_MM > 1090 && *Lambda_MM < 1112;
+//bool UpperSignalRegion = *Lambda_MM > 1119 && *Lambda_MM < 1140;
 
-	if (SignalRegion)
-		LambdaSignal->Fill(*Lambda_MM);
-	if (LowerSignalRegion)
-		LambdaLowerBand->Fill(*Lambda_MM);
-	if (UpperSignalRegion)
-		LambdaUpperBand->Fill(*Lambda_MM);
+	//if (SignalRegion)
+	//	LambdaSignal->Fill(*Lambda_MM);
+	//if (LowerSignalRegion)
+	//	LambdaLowerBand->Fill(*Lambda_MM);
+	//if (UpperSignalRegion)
+	//	LambdaUpperBand->Fill(*Lambda_MM);
 		
 //BandSignals->Add(LambdaLowerBand, LambdaUpperBand, 1.0, 1.0);
 //TotalSignals->Add(LambdaSignal, BandSignals, 1.0, -0.5);
@@ -104,11 +108,13 @@ bool UpperSignalRegion = *Lambda_MM > 1119 && *Lambda_MM < 1140;
 		//&&(*LambdaPi_ProbNNpi > 0.01)
 		//);
 
+//used this to zoom in on histograms
 double Xic0_IPCHI = *PromptPi_IPCHI2_OWNPV;
 	bool zoomed = (
 	(Xic0_IPCHI > 0 && Xic0_IPCHI < 20)
 	);
-
+	
+//Lambda Cuts	
 double Lambda_M = *Lambda_MM;
 
 	bool LambdaMass = (
@@ -125,6 +131,7 @@ double Lambda_M = *Lambda_MM;
 	
 	);
 
+//Omega Cuts
 double Omega_M = *Omega_MM;
 
 	bool OmegaMass = (
@@ -142,6 +149,7 @@ double Omega_M = *Omega_MM;
 	&&(*LambdaPi_ProbNNpi > 0.01)
 	);	
 
+//Xi_c0 Cuts
 double Xic0_mass = *Xi_c0_MM;
 
 	bool GoodXiDDL = (
