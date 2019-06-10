@@ -101,6 +101,9 @@ double Xic0_mass = *Xi_c0_MM;
 
 		&&(*LambdaPi_ProbNNpi > 0.05)	
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
+		
+		&&(*PromptPi_ProbNNk > 0.5)
+		&&(*PromptPi_IPCHI2_OWNPV < 0.25)
 
 		);
 	
@@ -111,15 +114,14 @@ double Xic0_mass = *Xi_c0_MM;
 		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
 		
 		&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		&&(*OmegaK_ProbNNk < 0.5)
+		//&&(*OmegaK_ProbNNk < 0.5)
 		
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		//&&(*Lambda_IPCHI2_OWNPV > 400)
 
-		&&(*LambdaPr_ProbNNp < 0.1)
+		//&&(*LambdaPr_ProbNNp < 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
 
-		&&(*LambdaPi_ProbNNpi < 0.05)	
+		//&&(*LambdaPi_ProbNNpi < 0.05)	
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
 
 		//&&(*PromptPi_ProbNNk < 0.5)
