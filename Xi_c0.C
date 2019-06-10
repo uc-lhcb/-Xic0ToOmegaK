@@ -25,10 +25,8 @@
 //
 
 TH1 * strippingLevelXiLDDMassHist = nullptr;
-TH1 * strippingLevelXiDDDMassHist = nullptr;
-TH1 * strippingLevelXiLLLMassHist = nullptr;
-TH1 * strippingLevelXiDLLMassHist = nullptr;
 TH1 * backgroundsubtractedXi = nullptr;
+TH1 * PrintGraph = nullptr;
 
 const int TRACK_LONG = 3;
 const int TRACK_DOWN = 5;
@@ -45,11 +43,9 @@ void Xi_c0::Begin(TTree * /*tree*/)
    // The tree argument is deprecated (on PROOF 0 is passed).
 
    TString option = GetOption();
-	strippingLevelXiLDDMassHist = new TH1D("XiLDD, Omega- K+", "LDD: Stripping Level Cuts", 100, 2320, 3100);
-	strippingLevelXiDDDMassHist = new TH1D("XiDDD, Omega- K+", "DDD: Stripping Level Cuts", 100, 2320, 3100);
-	strippingLevelXiLLLMassHist = new TH1D("XiLLL, Omega- K+", "LLL: Stripping Level Cuts", 100, 2320, 3100);
-	strippingLevelXiDLLMassHist = new TH1D("XiDLL Omega- K+", "DLL: StrippingLevel Cuts", 100, 2320, 3100);
+	strippingLevelXiLDDMassHist = new TH1D("XiLDD, Omega- K+", "LDD: Stripping Level Cuts", 50, 2300, 2600);
 	backgroundsubtractedXi = new TH1D("Background Noise", "Xi LL Background Subtracted", 100, 2320, 3100);
+	PrintGraph = new TH1D("Events", "Omega_MM Cut", 50, 1663, 1683);
 }
 
 void Xi_c0::SlaveBegin(TTree * /*tree*/)
@@ -66,17 +62,32 @@ Bool_t Xi_c0::Process(Long64_t entry)
 {
 fReader.SetEntry(entry);
 GetEntry(entry);
+	
+double Omega_mass = *Omega_MM;
+	
+	bool Plotter = (
+		 
+		(Omega_mass > 1665 && Omega_mass < 1680)
+		
+		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
+		
+		&&(*OmegaK_ProbNNk > 0.5)
+		&&(*OmegaK_TRACK_Type == TRACK_LONG)
+		
+		&&(*LambdaPr_ProbNNp > 0.1)
+		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
+		
+		&&(*LambdaPi_ProbNNpi > 0.05)
+		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
+		);
+	
 double Xic0_mass = *Xi_c0_MM;
 	
 	bool GoodXiLDD = (
 
 		(Xic0_mass > 2300. && Xic0_mass < 3100.)
-		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
 
 		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		//&&(*Omega_IPCHI2_OWNPV > 0)
-		//&&(*Omega_IPCHI2_OWNPV < 20)
 		
 		&&(*OmegaK_TRACK_Type == TRACK_LONG)
 		&&(*OmegaK_ProbNNk > 0.5)
@@ -93,115 +104,37 @@ double Xic0_mass = *Xi_c0_MM;
 
 		);
 	
-	bool GoodXiDDD = (
+	bool badXiLDD = (
+	
+		(Xic0_mass > 2300. && Xic0_mass < 3100.)
 		
-		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
-
-		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		//&&(*Omega_IPCHI2_OWNPV > 0)
-		//&&(*Omega_IPCHI2_OWNPV < 20)
-
-		&&(*OmegaK_TRACK_Type == TRACK_DOWN)
-		//&&(*OmegaK_ProbNNk > 0.5)
-
+		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		
+		&&(*OmegaK_TRACK_Type == TRACK_LONG)
+		&&(*OmegaK_ProbNNk < 0.5)
+		
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		//&&(*Lambda_IPCHI2_OWNPV > 0)
-		//&&(*Lambda_IPCHI2_OWNPV < 500)
+		//&&(*Lambda_IPCHI2_OWNPV > 400)
 
-		//&&(*LambdaPr_ProbNNp > 0.1)
+		&&(*LambdaPr_ProbNNp < 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
 
-		//&&(*LambdaPi_ProbNNpi > 0.1)
+		&&(*LambdaPi_ProbNNpi < 0.05)	
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
+
+		//&&(*PromptPi_ProbNNk < 0.5)
+		//&&(*PromptPi_IPCHI2_OWNPV < 0.25)
 	
-		);
-
-	bool GoodXiLLL = (
-		
-		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
-
-		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		//&&(*Omega_IPCHI2_OWNPV > 0)
-		//&&(*Omega_IPCHI2_OWNPV < 20)
-
-		&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		//&&(*OmegaK_ProbNNk > 0.5)
-
-		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		//&&(*Lambda_IPCHI2_OWNPV > 0)
-		//&&(*Lambda_IPCHI2_OWNPV < 500)
-
-		//&&(*LambdaPr_ProbNNp > 0.1)
-		&&(*LambdaPr_TRACK_Type == TRACK_LONG)
-
-		//&&(*LambdaPi_ProbNNpi > 0.1)
-		&&(*LambdaPi_TRACK_Type == TRACK_LONG)
-		
-		);
-
-	bool GoodXiDLL = (
-		
-		(Xic0_mass > 2300. && Xic0_mass < 3100)
-		//&&(*Xi_c0_IPCHI2_OWNPV > 0)
-		//&&(*Xi_c0_IPCHI2_OWNPV < 5)
-
-		//&&(*Omega_MM > 1665 && *Omega_MM < 1680)
-		//&&(*Omega_IPCHI2_OWNPV > 0)
-		//&&(*Omega_IPCHI2_OWNPV < 20)
-
-		&&(*OmegaK_TRACK_Type == TRACK_DOWN)
-		//&&(*OmegaK_ProbNNk > 0.5)
-
-		//&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		//&&(*Lambda_IPCHI2_OWNPV > 0)
-		//&&(*Lambda_IPCHI2_OWNPV < 500)
-
-		//&&(*LambdaPr_ProbNNp > 0.1)
-		&&(*LambdaPr_TRACK_Type == TRACK_LONG)
-
-		//&&(*LambdaPi_ProbNNpi > 0.1)
-		&&(*LambdaPi_TRACK_Type == TRACK_LONG)
-		
-		);
-
-
-
-
-	bool SubtractedXiLL = (
-		(Xic0_mass > 2300. && Xic0_mass < 3100.)
-		&&(*Xi_c0_FDCHI2_OWNPV > 33)
-		&&(*Xi_c0_FDCHI2_OWNPV < 50)
-		&&(*Omega_MM > 1650 && *Omega_MM < 1665)
-		&&(*Omega_MM > 1680 && *Omega_MM < 1698)
-		&&(*OmegaK_ProbNNe > 0.05)
-		&&(*OmegaK_ProbNNe < 1)
-		&&(*OmegaK_ProbNNpi > 0.1)
-		&&(*OmegaK_ProbNNpi < 1)
-		&&(*OmegaK_ProbNNghost > 0.1)
-		&&(*OmegaK_ProbNNghost < 1)
-		&&(*OmegaK_ProbNNk > 0)
-		&&(*OmegaK_ProbNNk < 0.6)
-		);
 		
 
 	if (GoodXiLDD)
 		strippingLevelXiLDDMassHist->Fill(*Xi_c0_MM);
-	
-	if (GoodXiLLL)
-		strippingLevelXiLLLMassHist->Fill(*Xi_c0_MM);
-	
-	if (GoodXiDLL)
-		strippingLevelXiDLLMassHist->Fill(*Xi_c0_MM);
-
-	if (GoodXiDDD)
-		strippingLevelXiDDDMassHist->Fill(*Xi_c0_MM);
 
 	if (SubtractedXiLL)
 		backgroundsubtractedXi->Fill(*Xi_c0_MM);
+	
+	if (Plotter)
+		PrintGraph->Fill(*Omega_MM)
 
 
    // The Process() function is called for each entry in the tree (or possibly
@@ -236,9 +169,22 @@ void Xi_c0::Terminate()
 TCanvas c1;
 strippingLevelXiLDDMassHist->GetXaxis()->SetTitle("MeV");
 strippingLevelXiLDDMassHist->GetYaxis()->SetTitle("Events Per 8 MeV");
+strippingLevelXiLDDMassHist->SetMinimum(0);
 strippingLevelXiLDDMassHist->Draw();
-//backgroundSubtractedXi->Draw();
 c1.SaveAs("Xi_c0_fit.png");
+	
+backgroundSubtractedXi->GetXaxis()->SetTitle("MeV");
+backgroundsubtractedXi->GetYaxis()->SetTitle("Events Per 6 Mev");
+backgroundsubtractedXi->SetMinimum(0);
+//backgroundsubtractedXi->Draw();
+//c1.SaveAs("TotalSubtraction.png");
+
+PrintGraph->GetXaxis()->SetTitle("MeV");
+PrintGraph->GetYaxis()->SetTitle("Events per 0.4 MeV");
+//PrintGraph->Draw();
+//c1.SaveAs("Omega_MM_Cut2.png");
+	
+
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
