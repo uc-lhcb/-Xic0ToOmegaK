@@ -27,6 +27,7 @@
 TH1 * strippingLevelXiLDDMassHist = nullptr;
 TH1 * backgroundsubtractedXi = nullptr;
 TH1 * PrintGraph = nullptr;
+TCanvas *c1 = new TCanvas('Histograms of Xi Mass", "", 750, 500);
 
 const int TRACK_LONG = 3;
 const int TRACK_DOWN = 5;
@@ -43,9 +44,10 @@ void Xi_c0::Begin(TTree * /*tree*/)
    // The tree argument is deprecated (on PROOF 0 is passed).
 
    TString option = GetOption();
-	strippingLevelXiLDDMassHist = new TH1D("XiLDD, Omega- K+", "LDD: Stripping Level Cuts", 50, 2300, 2600);
+	strippingLevelXiLDDMassHist = new TH1D("XiLDD, Omega- K+", "LDD: Stripping Level Cuts", 100, 2300, 3100);
 	backgroundsubtractedXi = new TH1D("Background Noise", "Xi LL Background Subtracted", 100, 2320, 3100);
 	PrintGraph = new TH1D("Events", "Omega_MM Cut", 50, 1663, 1683);
+	c1->Divide(2,1);
 }
 
 void Xi_c0::SlaveBegin(TTree * /*tree*/)
@@ -62,6 +64,8 @@ Bool_t Xi_c0::Process(Long64_t entry)
 {
 fReader.SetEntry(entry);
 GetEntry(entry);
+	
+double Omega_MM_Corrected = (*Omega_MM) - (*Lambda_MM) + 1115.683;
 	
 double Omega_mass = *Omega_MM;
 	
@@ -86,15 +90,14 @@ double Xic0_mass = *Xi_c0_MM;
 	bool GoodXiLDD = (
 
 		(Xic0_mass > 2300. && Xic0_mass < 3100.)
-
-		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		&&(*Xi_c0_PT > 1750)
+		
+		&&(Omega_MM_Corrected > 1665 && Omega_MM_Corrected < 1680)
 		
 		&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		&&(*OmegaK_ProbNNk > 0.5)
+		&&(*OmegaK_ProbNNk > 0.55)
 		
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
-		&&(*Lambda_IPCHI2_OWNPV > 0)
-		&&(*Lambda_IPCHI2_OWNPV < 400)
 
 		&&(*LambdaPr_ProbNNp > 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
@@ -102,8 +105,8 @@ double Xic0_mass = *Xi_c0_MM;
 		&&(*LambdaPi_ProbNNpi > 0.05)	
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
 		
-		&&(*PromptPi_ProbNNk > 0.5)
-		&&(*PromptPi_IPCHI2_OWNPV < 0.25)
+		&&(*PromptPi_ProbNNk > 0.55)
+		&&(*PromptPi_IPCHI2_OWNPV > 9)
 
 		);
 	
@@ -111,21 +114,23 @@ double Xic0_mass = *Xi_c0_MM;
 	
 		(Xic0_mass > 2300. && Xic0_mass < 3100.)
 		
-		&&(*Omega_MM > 1665 && *Omega_MM < 1680)
+		&&(*Omega_MM_Corrected > 1665 && *Omega_MM_Corrected < 1680)
 		
 		&&(*OmegaK_TRACK_Type == TRACK_LONG)
-		//&&(*OmegaK_ProbNNk < 0.5)
+		&&(*OmegaK_ProbNNk > 0.55)
 		
 		&&(*Lambda_MM > 1112 && *Lambda_MM < 1120)
 
-		//&&(*LambdaPr_ProbNNp < 0.1)
+		&&(*LambdaPr_ProbNNp > 0.1)
 		&&(*LambdaPr_TRACK_Type == TRACK_DOWN)
 
-		//&&(*LambdaPi_ProbNNpi < 0.05)	
+		&&(*LambdaPi_ProbNNpi > 0.05)	
 		&&(*LambdaPi_TRACK_Type == TRACK_DOWN)
 
-		//&&(*PromptPi_ProbNNk < 0.5)
-		//&&(*PromptPi_IPCHI2_OWNPV < 0.25)
+		&&(*PromptPi_ProbNNk > 0.55)
+		&&(*PromptPi_IPCHI2_OWNPV < 9)
+		
+		);
 	
 		
 
@@ -168,18 +173,41 @@ void Xi_c0::SlaveTerminate()
 
 void Xi_c0::Terminate()
 {
-TCanvas c1;
+	
+Double_t sigma;
+Double_t deltaSigma;
+Double_t mu;
+Double_t deltaMu;
+Double_t total;
+Double_t deltaTotal;
+TString sigmaStr;
+TString deltaSigmaStr;
+TString deltaTotalStr;
+TString muStr;
+TString deltaMuStr;
+TString totalStr;
+
+TF1 *myXifit = new TF1("myXifit", fit1MeV_Gaussian, 2300, 3100, 5);
+myXifit->SetParameter(0,40);
+myXifit->SetParameter(1, 2470);
+myXifit->SetParameter(2, 16);
+myXifit->SetParLimits(2, 0., 20.);
+myXifit->SetParameter(3, 0.);
+myXiFit->SetParameter(4, 0.);
+
+c1->cd(1);
 strippingLevelXiLDDMassHist->GetXaxis()->SetTitle("MeV");
 strippingLevelXiLDDMassHist->GetYaxis()->SetTitle("Events Per 8 MeV");
 strippingLevelXiLDDMassHist->SetMinimum(0);
-strippingLevelXiLDDMassHist->Draw();
+strippingLevelXiLDDMassHist->Fit("myXifit");
 c1.SaveAs("Xi_c0_fit.png");
-	
+
+c1->cd(2);
 backgroundSubtractedXi->GetXaxis()->SetTitle("MeV");
 backgroundsubtractedXi->GetYaxis()->SetTitle("Events Per 6 Mev");
 backgroundsubtractedXi->SetMinimum(0);
-//backgroundsubtractedXi->Draw();
-//c1.SaveAs("TotalSubtraction.png");
+backgroundsubtractedXi->Draw();
+c1.SaveAs("TotalSubtraction.png");
 
 PrintGraph->GetXaxis()->SetTitle("MeV");
 PrintGraph->GetYaxis()->SetTitle("Events per 0.4 MeV");
