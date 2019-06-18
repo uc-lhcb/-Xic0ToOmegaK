@@ -38,11 +38,11 @@ THStack *hs = new THStack("hs", "Background Subtracted Xi_c0");
 void MultiVariate::Begin(TTree * /*tree*/)
 {
 
-scatterplot = new TH2D("Entires", "IPCHI2_OWNPV vs PromptPi_ProbNNk", 100., 0, 100., 100., 0., 1.);
+scatterplot = new TH2D("Entires", "Log(PromptPi_IPCHI2_OWNPV) vs PromptPi_ProbNNk", 100., 0, 10., 100., 0., 1.);
 LowerSideBand = new TH1D("Lower Side Band", "Probability", 100, 0., 1.);
 UpperSideBand = new TH1D("Upper Side Band", "Probability", 100, 0., 1.);
 SignalRegion = new TH1D("Signal Region", "Probability", 100, 0., 1.);
-scatterplot->GetXaxis()->SetTitle("IPCHI2_OWNPV");
+scatterplot->GetXaxis()->SetTitle("Log(IPCHI2_OWNPV)");
 scatterplot->GetYaxis()->SetTitle("PromptPi_ProbNNk");
 
    // The Begin() function is called at the start of the query.
@@ -70,11 +70,9 @@ GetEntry(entry);
 
 double Omega_MM_Corrected = (*Omega_MM) - (*Lambda_MM) + 1115.683;
 
-bool SignalRegion =
-bool LowerSideBand
-bool UpperSideBand
 
-scatterplot->Fill(*PromptPi_IPCHI2_OWNPV, *PromptPi_ProbNNk);
+
+scatterplot->Fill(log(*PromptPi_IPCHI2_OWNPV), *PromptPi_ProbNNk);
    // The Process() function is called for each entry in the tree (or possibly
    // keyed object in the case of PROOF) to be processed. The entry argument
    // specifies which entry in the currently loaded tree is to be processed.
@@ -108,7 +106,7 @@ void MultiVariate::Terminate()
 {
 TCanvas c1;
 scatterplot->Draw("colz");
-c1.SaveAs("MultiAttempt.png");
+c1.SaveAs("MultiVariate_100x100_Bins.png");
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
