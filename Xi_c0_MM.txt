@@ -1,4 +1,0 @@
-hists {; Xi_c0_MM
-  hist1 {; Xi_c0_MM
-    ;Draw "Xi_c0_MM>>Xi_c0_MM(100,2320,3100)" ;
-  }
